@@ -144,8 +144,8 @@ metode.
   časa.
 * Concurrent garbage collection je podoben kot incremental, le da ima bolj
   pametno izbiro časov, med katerimi se izvaja, npr. lahko izvede veliko dela
-  med tem, ko čaka na uporabnikov odziv. Teče sočasno s programom, ni pa nujno,
-  da paralelno.
+  med tem, ko čaka na uporabnikov odziv, ali ko se izvaja neka zunanja koda.
+  Teče sočasno s programom, ni pa nujno, da paralelno.
 * Parallel garbage collector teče na svoji niti, tako, da lahko svoje delo
   opravlja vzporedno z izvajanjem programa. Parallel garbage collector je lahko
   concurrent, incremental ali stop-the-world.
@@ -162,17 +162,7 @@ metode.
   reference, a to niti ni tako velik problem, saj je verjetnost da se to zgodi
   zelo majhna, izguba spomina pa zaradi tega ni velika.
 
-## Generational
-
-* Generational garbage collector uporablja več kopic, ponavadi dve, eno za
-  mlade objekte in eno za stare. Temeli na spoznanju, da 10-20% objektov živi
-  80-90% procentov časa, zato lahko uporablja različne strategije za mlade in
-  stare objekte. Ponavadi z redkejšim čiščenjem starejših objektov prihrani
-  veliko procesorskega časa. Ker stari objekti redko (v nekaterih funkcijskih
-  jezih celo nikoli) kažejo na stare, se lahko take refernce upravlja posebej,
-  kar dodatno pohitri delovanje. Ta tehnika se imenuje remembered set.
-
-## Non-moving, Moving, Copying
+## Non-moving, Moving
 
 * Non-moving garbage collector med izvajanjem programa objektov, ki so že v
   spominu ne prestavlja. To je preprostejše implementirati in deluje hitreje, a
@@ -181,9 +171,20 @@ metode.
   pomnilnikom.
 * Moving garbage collector med izvajanjem objekte prestavlja. Ponavadi jih
   poskuša zgostiti v bloke v pomnilniku.
-* Copying garbage collector žive objekte prestavi v drugo kopico, staro pa v
-  celoti reciklira. To se pogosto uporablja v povezavi z generational garbage
-  collectorjem.
+
+## Operacije Mark, Sweep, Compact, Copy
+
+* Operacija Mark preišče vse objekte v pomnilniku in označi tiste, ki jih lahko
+  doseže. Iskanje začne v vseh referencah, ki so direktno vidne programu, kot
+  so spremenljivke na skladu in statične spremenljivke. Časovna zahtevnost
+  operacije je ponavadi linearna velikosti žive množice.
+* Operacija Sweep preišče celotno kopico in reciklira objekte, ki niso označeni
+  za žive. Časnovna zahtevnost je ponavadi linearna velikosti kopice.
+* Operacija Compact vse žive objekte premakne tako, da med njimi ni praznega
+  prostora. Časovna zahtevnost je ponavadi linearna velikosti žive množice.
+* Operacija Copy preišče množico podobno, kot mark, le da jih namesto
+  označevanja prestavi v drugo kopico. Stara kopica se po operaciji smatra za
+  prazno. Čas trajanja je linearen velikosti žive množice.
 
 ## Konkretni algoritmi za tracing garbage collection
 
@@ -191,13 +192,26 @@ metode.
   označi tiste, ki so še dostopni, v fazi sweep pa počisti nedostopne.
 * Mark-sweep-compact deluje podobno, kot mark-sweep, le da v drugi fazi objekte
   prestavi tako, da ne pride do fragmentacije.
+* Mark-compact deluje podobno, kot mark-sweep-compact, le da operacijo sweep
+  preskoči, operacijo compact pa izvede v drug del kopice. Je hitrejši, kot
+  mark-sweep-compact, a potrebuje večjo kopico, vsaj dvakrat večjo od velikosti
+  žive množice.
 * Mark-don't-sweep deluje tako, da vse objekte tretira kot žive, dokler
   prostor na pomnilniku ne poide. Ko se to zgodi, vse objekte označi kot mrtve,
   na to pa izvede fazo mark, s katero spet označi žive. Vsi objekti, ki v tej
   fazi niso bili označeni, se tretirajo kot prost pomnilnik.
+* Copy žive objekte prestavi v drugo kopico, staro pa v celoti reciklira. To se
+  v glavnem uporablja v povezavi z generational garbage collectorjem, za
+  čiščenje mladih objektov.
+* Generational garbage collector uporablja več kopic, ponavadi dve, eno za
+  mlade objekte in eno za stare. Temeli na spoznanju, da 10-20% objektov živi
+  80-90% procentov časa, zato lahko uporablja različne strategije za mlade in
+  stare objekte. Ponavadi z redkejšim čiščenjem starejših objektov prihrani
+  veliko procesorskega časa. Ker stari objekti redko (v nekaterih funkcijskih
+  jezih celo nikoli) kažejo na stare, se lahko take refernce upravlja posebej,
+  kar dodatno pohitri delovanje. Ta tehnika se imenuje remembered set.
 
-
-# Primeri programskih jezikov
+# Konkretni primeri programskih jezikov
 
 ## Java
 
