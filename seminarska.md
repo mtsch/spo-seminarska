@@ -36,7 +36,7 @@ alokacija. Pri statični alokaciji se deli uporabljenega pomnilnika določijo ž
 med prevajanjem, oz. v primeru strojne kode med pisanjem programa.  
 Kasneje, v sredini petdesetih let, so na plan prišli prvi višje-nivojski
 programski jeziki, a so še vedno v glaven uporabljali statično alokacijo,
-nekateri, npr ALGOL, pa so za delo s pomnilnikom uporabljali izključno sklad.  
+nekateri, npr. ALGOL, pa so za delo s pomnilnikom uporabljali izključno sklad.  
 Ideja avtomatskega dela s pomnilnikom se je pojavila leta 1959, ko ga je John
 McCarthy izumil prvi garbage collector, z namenom, da se uporablja v
 programskem jezik LISP.  
@@ -190,8 +190,8 @@ metode.
 
 * Mark-sweep deluje v dveh fazah. V fazi mark se preišče vse žive objekte in
   označi tiste, ki so še dostopni, v fazi sweep pa počisti nedostopne.
-* Mark-sweep-compact deluje podobno, kot mark-sweep, le da v drugi fazi objekte
-  prestavi tako, da ne pride do fragmentacije.
+* Mark-sweep-compact deluje podobno, kot mark-sweep, le da v tretji fazi
+  objekte prestavi tako, da ne pride do fragmentacije.
 * Mark-compact deluje podobno, kot mark-sweep-compact, le da operacijo sweep
   preskoči, operacijo compact pa izvede v drug del kopice. Je hitrejši, kot
   mark-sweep-compact, a potrebuje večjo kopico, vsaj dvakrat večjo od velikosti
@@ -205,10 +205,10 @@ metode.
   čiščenje mladih objektov.
 * Generational garbage collector uporablja več kopic, ponavadi dve, eno za
   mlade objekte in eno za stare. Temeli na spoznanju, da 10-20% objektov živi
-  80-90% procentov časa, zato lahko uporablja različne strategije za mlade in
-  stare objekte. Ponavadi z redkejšim čiščenjem starejših objektov prihrani
-  veliko procesorskega časa. Ker stari objekti redko (v nekaterih funkcijskih
-  jezih celo nikoli) kažejo na stare, se lahko take refernce upravlja posebej,
+  80-90% časa, zato lahko uporablja različne strategije za mlade in stare
+  objekte. Ponavadi z redkejšim čiščenjem starejših objektov prihrani veliko
+  procesorskega časa. Ker stari objekti redko (v nekaterih funkcijskih
+  jezikih celo nikoli) kažejo na stare, se lahko take refernce upravlja posebej,
   kar dodatno pohitri delovanje. Ta tehnika se imenuje remembered set.
 
 # Konkretni primeri programskih jezikov
@@ -227,9 +227,9 @@ strategije.
 Python uporablja reference counting v povezavi z algoritmom, ki šteje razliko
 med številom alokacij in dealokacij. Ko to število preseže neko mejo, se požene
 algoritem podoben mark-and-sweep, ki išče cikle in že od začetka ignorira
-strukture, ki ne morejo biti ciklične (kot npr. `array` in `string`). Če najde
-cikel, vsem objektom v ciklu zmanjša števec referenc za 1. Če ta doseže 0,
-lahko počisti ciklično strukturo.
+strukture, ki ne morejo biti ciklične (kot npr. `string`). Če najde cikel, vsem
+objektom v ciklu zmanjša števec referenc za 1. Če ta doseže 0, lahko počisti
+ciklično strukturo.
 
 ## C++
 
