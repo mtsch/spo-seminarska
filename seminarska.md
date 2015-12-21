@@ -8,9 +8,9 @@
 V svoji seminarski nalogi bom predstavil problem čiščenja pomnilnika in
 različne načine na katere ga rešujemo, sploh tiste, ki se danes še uporabljajo.
 Največ pozornosti bom posvetil avtomatskemu čiščenju pomnilnika (garbage
-collection). Začel bom s kratko zgodovino, nato predstavil najpogosteje
-uporabljene algoritme, za konec pa še podal nekaj konkretnih primerov iz
-programskih jezikov, ki so se mi zdeli pomembni ali zanimivi.  
+collection). Začel bom z opisom problema in kratko zgodovino, nato predstavil
+najpogosteje uporabljene algoritme, za konec pa še podal nekaj konkretnih
+primerov iz programskih jezikov, ki so se mi zdeli pomembni ali zanimivi.  
 Ker za vse termine ne poznam slovenskih izrazov, bom nekatere izraze uporabljal
 v angleščini.
 
@@ -19,7 +19,7 @@ v angleščini.
 Računalniki pri svojem delu uporabljajo pomnilnik. Praktično vsi sodobni
 programski jeziki pomnilnik razdelijo na sklad (stack) in kopico (heap).  
 Delo s skladom je preprosto, saj je urejen in nanj podatke lahko nalagamo z
-ukazom `PUSH` in jih iz njega jemljemo z ukazom `POP`s, njegov problem pa je,
+ukazom `PUSH` in jih iz njega jemljemo z ukazom `POP`, njegov problem pa je,
 da je ponavadi v primerjavi s kopico majhen, in da so stvari, ki so naložene
 nanj navadno vidne samo iz enega dela podprograma.  
 Delo s kopico je bolj zapleteno, saj ta ni strukturirana, tako da mora program
@@ -107,6 +107,8 @@ Kjub preprostosti ima metoda nekaj slabih strani.
   potrebno niti med seboj uskladiti. Problem lahko nastane tudi pri čiščenju
   velikih objektov, ki lahko čas izvajanja programa za nekaj časa popolnoma
   ustavijo.
+* Dolgotrajno čiščenje velikih objektov - Objekt moramo iz pomnilnika počistiti
+  v celoti, kar je lahko pri velikih objektih zelo zamudno.
 
 Poleg osnovnega algoritma obstaja še nekaj izboljšav, kot je npr. deferred
 reference counting.  
@@ -152,9 +154,9 @@ metode.
 
 ## Precise, Conservative
 
-* Precise garbage collector pri iskanju objektov sledi le tistim delom spomina,
-  ki so definirane kot reference. To se uporablja v praktično vseh jezikih, saj
-  po navadi ne dovoljujejo aritmetike s kazalci.
+* Precise garbage collector pri iskanju objektov sledi le tistim poljem
+  struktur, ki so definirane kot reference. To se uporablja v praktično vseh
+  jezikih, saj po navadi ne dovoljujejo aritmetike s kazalci.
 * Conservative garbage collector kot reference tretira vsa polja v objektih,
   tudi npr. integerje, saj bi se lahko za njimi skrivale reference.  To pride v
   poštev pri jezikih, kot je C, ki dovoljujejo cast kazalca na kak drug
@@ -200,9 +202,6 @@ metode.
   prostor na pomnilniku ne poide. Ko se to zgodi, vse objekte označi kot mrtve,
   na to pa izvede fazo mark, s katero spet označi žive. Vsi objekti, ki v tej
   fazi niso bili označeni, se tretirajo kot prost pomnilnik.
-* Copy žive objekte prestavi v drugo kopico, staro pa v celoti reciklira. To se
-  v glavnem uporablja v povezavi z generational garbage collectorjem, za
-  čiščenje mladih objektov.
 * Generational garbage collector uporablja več kopic, ponavadi dve, eno za
   mlade objekte in eno za stare. Temeli na spoznanju, da 10-20% objektov živi
   80-90% časa, zato lahko uporablja različne strategije za mlade in stare
@@ -218,9 +217,9 @@ metode.
 Javin JVM uporablja generational garbage collection. Za mlajšo generacijo
 uporablja copying stop-the-world collector, ki vse objekte, ki preživijo
 prestavi v starejšo generacijo, celoten prostor mlajše pa obravnava kot prost.
-Za starejšo generacijo se uporablja concurrent mark-and-sweep algoritem.
-Obstajajo tudi drugačne implementacije JVM-ja, ki uporabljajo različne
-strategije.
+Za starejšo generacijo se uporablja concurrent mark-sweep algoritem. Obstajajo
+tudi drugačne implementacije JVM-ja, ki uporabljajo različne strategije. Tu sem
+opisal delovanje OpenJDKja in Oracle JDKja.
 
 ## Python
 
